@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.employeeManagement.exception.UserNotFoundException;
 import com.employeeManagement.model.Employee;
 import com.employeeManagement.repo.EmployeeRepo;
+
+import jakarta.transaction.Transactional;
 @Service
 public class EmployeeService {
 	private final EmployeeRepo employeeRepo;
@@ -31,7 +33,7 @@ public class EmployeeService {
 	public Employee updateEmployee(Employee employee) {
 		return employeeRepo.save(employee);
 	}
-	
+	@Transactional
 	public void deleteEmployee(Long id) {
 		employeeRepo.deleteEmployeeById(id);
 	}

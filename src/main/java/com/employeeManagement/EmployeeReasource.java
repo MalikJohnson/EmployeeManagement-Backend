@@ -2,6 +2,7 @@ package com.employeeManagement;
 
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -52,9 +53,18 @@ public class EmployeeReasource {
 	}
 	
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id){
-		employeeService.deleteEmployee(id);
-		return new ResponseEntity<>( HttpStatus.OK);
+	public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id) {
+	    try {
+	        employeeService.deleteEmployee(id);
+	        return new ResponseEntity<>(HttpStatus.OK);
+	    } catch (EmptyResultDataAccessException e) {
+	        // Employee not found
+	        return new ResponseEntity<>("Employee not found with ID: " + id, HttpStatus.NOT_FOUND);
+	    } catch (Exception e) {
+	        // Other exceptions 
+	        e.printStackTrace(); // Log the exception
+	        return new ResponseEntity<>("An error occurred while deleting the employee.", HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
 }
