@@ -1,12 +1,17 @@
 package com.employeeManagement.model;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 
 @Entity
 public class Employee implements Serializable {
@@ -22,11 +27,15 @@ public class Employee implements Serializable {
 	private String imageUrl;
 	@Column(nullable = false, updatable = false)
 	private String employeeCode;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+    private User user;
 
 	public Employee() {}
 	
 	public Employee(Long id, String name, String email, String jobTitle, String phone, String imageUrl,
-			String employeeCode) {
+			String employeeCode, User user) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
@@ -34,7 +43,16 @@ public class Employee implements Serializable {
 		this.phone = phone;
 		this.imageUrl = imageUrl;
 		this.employeeCode = employeeCode;
+		this.user = user;
 	}
+	
+	public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
 	public Long getId() {
 		return id;
@@ -97,6 +115,13 @@ public class Employee implements Serializable {
 		return "Employee [id=" + id + ", name=" + name + ", email=" + email + ", jobTitle=" + jobTitle + ", phone="
 				+ phone + ", imageUrl=" + imageUrl + "]";
 	}
+	
+	@PrePersist
+    private void generateEmployeeCode() {
+        if (this.employeeCode == null) {
+            this.employeeCode = UUID.randomUUID().toString();
+        }
+    }
 
 	
 	
