@@ -6,6 +6,10 @@ import com.employeeManagement.dto.RegisterRequest;
 import com.employeeManagement.model.User;
 import com.employeeManagement.security.JwtUtil;
 import com.employeeManagement.service.AuthService;
+
+import java.util.Collections;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,8 +43,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Map<String, String>> register(@RequestBody RegisterRequest request) {
         User user = authService.registerUser(request);
-        return ResponseEntity.ok("User registered successfully!");
+        return ResponseEntity.ok(Collections.singletonMap("message", "User registered successfully!"));
     }
 }
